@@ -1,0 +1,14 @@
+package com.springboot.university;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MiniProjectAttendanceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(MiniProjectAttendanceApplication.class, args);
+		
+	}
+
+}
