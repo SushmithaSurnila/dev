@@ -1,23 +1,30 @@
 package com.springboot.university.entities;
 
-import org.springframework.beans.factory.annotation.Value;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Faculty {
 	
+	@NotBlank(message="faculty name shouldn't be blank or null")
 	private String name;
 	
 	private String gender;
 	
 	@Id
-	private Long facultyid;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long facultyId;
 	
 	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_depId",referencedColumnName = "depId")
 	private Department department;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -25,19 +32,29 @@ public class Faculty {
 	
 	private int leaves;
 	
+	private int availableNumberOfLeaves=10;
 	
+	@NotBlank(message="phone number shouldn't be blank or null")
+    @Size(min=10,max=10,message="invalid phone number")
+	private String phonenumber;
 	
-	public int getLeaves() {
-		return leaves;
-	}
-
-	public void setLeaves(int leaves) {
+	public Faculty(String name, String gender, Long facultyId, Department department, Address address, int leaves,
+			int availableNumberOfLeaves, String phonenumber) {
+		super();
+		this.name = name;
+		this.gender = gender;
+		this.facultyId = facultyId;
+		this.department = department;
+		this.address = address;
 		this.leaves = leaves;
+		this.availableNumberOfLeaves = availableNumberOfLeaves;
+		this.phonenumber = phonenumber;
 	}
 
-	private int availableNumberOfLeaves;
-	
-	private long phonenumber;
+	public Faculty() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	public String getName() {
 		return name;
@@ -55,19 +72,19 @@ public class Faculty {
 		this.gender = gender;
 	}
 
-	public long getFacultyid() {
-		return facultyid;
+	public Long getFacultyId() {
+		return facultyId;
 	}
 
-	public void setFacultyid(long facultyid) {
-		this.facultyid = facultyid;
+	public void setFacultyId(Long facultyId) {
+		this.facultyId = facultyId;
 	}
 
-	public Department getDepartmentid() {
+	public Department getDepartment() {
 		return department;
 	}
 
-	public void setDepartmentid(Department department) {
+	public void setDepartment(Department department) {
 		this.department = department;
 	}
 
@@ -79,6 +96,14 @@ public class Faculty {
 		this.address = address;
 	}
 
+	public int getLeaves() {
+		return leaves;
+	}
+
+	public void setLeaves(int leaves) {
+		this.leaves = leaves;
+	}
+
 	public int getAvailableNumberOfLeaves() {
 		return availableNumberOfLeaves;
 	}
@@ -87,32 +112,14 @@ public class Faculty {
 		this.availableNumberOfLeaves = availableNumberOfLeaves;
 	}
 
-	public long getPhonenumber() {
+	public String getPhonenumber() {
 		return phonenumber;
 	}
 
-	public void setPhonenumber(Long phonenumber) {
+	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
-
-	public Faculty(String name, String gender, Long facultyid, Department department, Address address, int leaves,
-			int availableNumberOfLeaves, long phonenumber) {
-		super();
-		this.name = name;
-		this.gender = gender;
-		this.facultyid = facultyid;
-		this.department = department;
-		this.address = address;
-		this.leaves = leaves;
-		this.availableNumberOfLeaves = availableNumberOfLeaves;
-		this.phonenumber = phonenumber;
-	}
-
-	public Faculty() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 	
-	
+
 	
 }

@@ -1,10 +1,13 @@
 package com.springboot.university.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 
 @Entity
+@Table(name="address")
 public class Address {
 	
 	private String city;

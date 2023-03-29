@@ -33,7 +33,7 @@ class StudentRepositoryTest2 {
 			s.setStudentId(1);
 			s.setAddress(null);
 			s.setDepartment(null);
-			s.setPhonenumber(799583);
+			s.setPhonenumber("7995830188");
 			s.setAvailableNumberOfLeaves(10);
 			s.setLeaves(2);
 			
@@ -54,7 +54,7 @@ class StudentRepositoryTest2 {
 			s.setStudentId(1);
 			s.setAddress(null);
 			s.setDepartment(null);
-			s.setPhonenumber(799583);
+			s.setPhonenumber("1234567892");
 			s.setAvailableNumberOfLeaves(10);
 			s.setLeaves(2);
 		   
@@ -77,7 +77,7 @@ class StudentRepositoryTest2 {
 			s.setGender("female");
 			s.setStudentId(1);
 			
-			s.setPhonenumber(799583);
+			s.setPhonenumber("9876543212");
 			s.setAvailableNumberOfLeaves(10);
 			s.setLeaves(2);
 		   
@@ -98,7 +98,7 @@ class StudentRepositoryTest2 {
 				s.setStudentId(1);
 				s.setAddress(null);
 				s.setDepartment(null);
-				s.setPhonenumber(799583);
+				s.setPhonenumber("9100875503");
 				s.setAvailableNumberOfLeaves(10);
 				s.setLeaves(2);
 			   
@@ -107,11 +107,11 @@ class StudentRepositoryTest2 {
 				 
 			 Student studentUpdate=studentRepository.findById(1).get();
 			 studentUpdate.setName("sangeetha");
-			 studentUpdate.setPhonenumber(8764545);
+			 studentUpdate.setPhonenumber("8976543219");
 			 Student studentUpdated=studentRepository.save(studentUpdate);
 			 
 			 Assertions.assertThat(studentUpdated.getName()).isEqualTo("sangeetha");
-			 Assertions.assertThat(studentUpdated.getPhonenumber()).isEqualTo(8764545);
+			 Assertions.assertThat(studentUpdated.getPhonenumber()).isEqualTo("8976543219");
 			 
 		 }
 		 

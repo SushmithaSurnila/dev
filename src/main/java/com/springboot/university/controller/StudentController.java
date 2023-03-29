@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +18,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.university.entities.Department;
+
 import com.springboot.university.entities.Student;
+import com.springboot.university.exception.StudentAlreadyExistsException;
 import com.springboot.university.exception.StudentNotFoundException;
 import com.springboot.university.service.Studentservice;
 
+import jakarta.validation.Valid;
+
 @RestController
+@Validated
 public class StudentController {
 	
 	@Autowired
@@ -29,56 +35,57 @@ public class StudentController {
 
 	
 	@GetMapping("/student")
-	public List<Student> getAllStudents()  
+	public ResponseEntity<List<Student>> getAllStudents() throws StudentNotFoundException  
 	{    
-	return studentService.getAllStudent();
+		return ResponseEntity.ok(studentService.getAllStudent());
 	
 	}	
 	
 	@PostMapping("/save")
-	public String addStudent(@RequestBody Student student)
+	public ResponseEntity<String> addStudent(@RequestBody @Valid Student student) throws StudentAlreadyExistsException
 	{
 		studentService.addStudent(student);
-		return "Student details saved";
+		return ResponseEntity.ok("Student details saved");
 			
 	}
 	
 	
 	@GetMapping("student/findbyId/{studentid}")
-	public ResponseEntity<Student> getStudentById(@PathVariable Integer studentid) {
-		Student student= studentService.getStudentById(studentid);
-		if(student == null)
-		{
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		return ResponseEntity.of(Optional.of(student));
+	public ResponseEntity<Optional<Student>> getStudentById(@PathVariable Integer studentid) throws StudentNotFoundException {
+		
+		return ResponseEntity.ok(studentService.getStudentById(studentid));
 		
 	}
 	
 	
-	@PutMapping("/update")
-	public String updateStudent(@RequestBody Student student)
+	@PutMapping("/update/{studentId}")
+	public ResponseEntity<String> updateLeaves(@PathVariable Integer studentId ,@RequestBody Student student) throws Exception
 	{
-		studentService.updateStudent(student);
-		return "Student details Updated";
-		
-				
-	}
-	
-	@PutMapping("/update/leaves")
-	public void updateLeaves(Student student) throws StudentNotFoundException
-	{
-		studentService.updateLeaves(student);
+		 try{
+			    
+			   studentService.updateLeaves(studentId, student);
+			   return ResponseEntity.ok("Student details updated");
+			 }
+			catch(Exception Exception ){
+			  return new ResponseEntity(Exception.getMessage(), HttpStatus.CONFLICT);
+			 }
 		
 				
 	}
 
 	@DeleteMapping("/student/deletebyId/{studentId}")
-	public String deleteStudentById(@PathVariable Integer studentId)
+	public void deleteStudentById(@PathVariable Integer studentId) throws StudentNotFoundException 
 	{
 		studentService.deleteStudentById(studentId);
-		return "Student with Id deleted";
 		
+		//Integer deleteStudentId=studentService.deleteStudentById(studentId);
+		//if(deleteStudentId!=null) {
+			//return ResponseEntity.ok(deleteStudentId);
+		//}else {
+		  //    return (ResponseEntity<Integer>) ResponseEntity.status(HttpStatus.NOT_FOUND);
+		  //}
+			
+			
 	}
 	
 	

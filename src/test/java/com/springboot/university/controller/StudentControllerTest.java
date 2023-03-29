@@ -75,7 +75,7 @@ class StudentControllerTest {
 				department.setDeptname("Mech");
 		student.setDepartment(department);
 		
-		student.setPhonenumber(799583);
+		student.setPhonenumber("7995830188");
 		student.setAvailableNumberOfLeaves(10);
 		student.setLeaves(2);
 		
@@ -115,7 +115,7 @@ class StudentControllerTest {
 				d1.setDeptname("CSE");
 		s1.setDepartment(d1);
 		
-		s1.setPhonenumber(910087);
+		s1.setPhonenumber("9100875503");
 		s1.setAvailableNumberOfLeaves(10);
 		s1.setLeaves(3);
 		
@@ -157,20 +157,20 @@ class StudentControllerTest {
 				d1.setDeptname("ECE");
           s1.setDepartment(d1);
 		
-		s1.setPhonenumber(63034);
+		s1.setPhonenumber("8765432123");
 		s1.setAvailableNumberOfLeaves(10);
 		s1.setLeaves(4);
 		
-		Mockito.when(studentService.updateStudent(Mockito.any(Student.class))).thenReturn(s1);
+		Mockito.when(studentService.updateLeaves(Mockito.anyInt(),Mockito.any(Student.class))).thenReturn(s1);
 		String json = mapper.writeValueAsString(s1);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
-				.put("/update")
+				.put("/update/{studentId}",3)
 				.content(json)
 				.contentType(MediaType.APPLICATION_JSON);
 
 	    MvcResult mvcResult=mockMvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
 		String actualResponseBody = mvcResult.getResponse().getContentAsString();
-		String expected="Student details Updated";
+		String expected="Student details updated";
 		assertThat(actualResponseBody).isEqualToIgnoringWhitespace(expected);
 		
 		

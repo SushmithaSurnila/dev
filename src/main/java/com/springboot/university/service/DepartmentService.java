@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 
 import com.springboot.university.entities.Department;
+import com.springboot.university.exception.DepartmentNotFoundException;
+import com.springboot.university.exception.FacultyNotFoundException;
 import com.springboot.university.repository.DepartmentRepository;
 
 @Service
@@ -21,12 +23,12 @@ public class DepartmentService {
         return (ArrayList<Department>) deprepository.findAll();
     }
 	
-    public Department findAllDepartmentByID(Long depId) {
+    public Department findAllDepartmentByID(Long depId) throws DepartmentNotFoundException  {
         Optional<Department> opt = deprepository.findById(depId);
         if (opt.isPresent())
             return opt.get();
         else
-            return null;
+        	throw new DepartmentNotFoundException("	Department not found with id");
     }
 	
     public void addDepartment(Department department)  

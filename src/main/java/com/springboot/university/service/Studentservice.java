@@ -10,43 +10,63 @@ import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.springboot.university.entities.Department;
+import com.springboot.university.entities.Faculty;
 import com.springboot.university.entities.Student;
+import com.springboot.university.exception.FacultyNotFoundException;
+import com.springboot.university.exception.StudentAlreadyExistsException;
+//import com.springboot.university.exception.StudentInsufficientException;
 import com.springboot.university.exception.StudentNotFoundException;
 import com.springboot.university.repository.StudentRepository;
 
 @Service
 public class Studentservice {
 	
-	private static  int availableNumberOfLeaves;
+	
 	@Autowired
 	private StudentRepository studentRepository;
 		
-	public List<Student> getAllStudent(){
-	      List<Student> students = new ArrayList<Student>();
-	      studentRepository.findAll().forEach(student -> students.add(student));
-	      return students;
+	public List<Student> getAllStudent() throws StudentNotFoundException{
+		List<Student> students=studentRepository.findAll();
+		if(students.isEmpty()) {
+			throw new StudentNotFoundException("No student found");
+		}
+		return students;
+	    
+	     
 	   }
 
-	public Student addStudent(Student student)  
-	{    
-	  return studentRepository.save(student);
+	public Student addStudent(Student student) throws StudentAlreadyExistsException  
+	{
+		if(studentRepository.existsById(student.getStudentId()))
+			throw new StudentAlreadyExistsException("Student Already Exists");
+		
+	    Student saveStudent= studentRepository.save(student);
+	    return saveStudent;
 	}
 	
 	
-	public Student getStudentById(Integer studentId) {
-	       return studentRepository.findById(studentId).get();
+	public Optional<Student> getStudentById(Integer studentId) throws StudentNotFoundException 
+    {
+		Optional<Student> student=studentRepository.findById(studentId);
+		if(student.isPresent()){
+			return student;
+		}
+		else{
+			throw new StudentNotFoundException("student not found with id:");
+		}
+		  		   
 	}
 
-	public void updateLeaves(Student student) throws StudentNotFoundException
+	public Student updateLeaves(Integer studentId,Student student) throws Exception
 	{
 		
 		Student st=studentRepository.findById(student.getStudentId())
 				.orElseThrow(()->new StudentNotFoundException("No student with id"));
-		if(student.getName()!=null)
-		{
+		if(student.getName()!=null)		{
 			st.setName(student.getName());
 		}
 		
@@ -54,27 +74,35 @@ public class Studentservice {
 		{
 			if(student.getLeaves()<=st.getAvailableNumberOfLeaves())
 			{
-				student.setAvailableNumberOfLeaves(st.getLeaves()-student.getLeaves());
-				st.setLeaves(student.getLeaves());
+				student.setAvailableNumberOfLeaves(st.getAvailableNumberOfLeaves()-student.getLeaves());
+				st.setLeaves(student.getAvailableNumberOfLeaves());
 			}
-		}
-		studentRepository.save(st);
+			else
+			{
+				throw new Exception("Leaves cannot be granted due to insufficient leave balance");
+			}
 			
-	}
-	
-	public Student updateStudent(Student student)
-	{
-		
+		}
 		return studentRepository.save(student);
 		
-	}
-	
-	public Student deleteStudentById(Integer studentId)
-	{
-		
-		studentRepository.deleteById(studentId);
-		return null;
 			
 	}
+	
+	
+	public void deleteStudentById(Integer studentId) throws StudentNotFoundException
+	{
+		Optional<Student> student=studentRepository.findById(studentId);
+		if(student.isPresent()){
+			studentRepository.deleteById(studentId);
+		}
+		else{
+			throw new StudentNotFoundException("student with id "+ studentId +" not found");
+		}
+			
+		    		  		
+	}
+
+	
+
 	
 }

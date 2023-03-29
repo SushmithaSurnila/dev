@@ -1,36 +1,46 @@
 package com.springboot.university.entities;
 
-import java.util.function.IntPredicate;
-
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="Student")
 public class Student {
 	
+	@NotBlank(message="student name shouldn't be blank or null")
 	private String name;
 	
 	private String gender;
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer studentId;
 	
 	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_addressline1",referencedColumnName = "addressline1")
 	private Address address;
 	
 	@OneToOne(cascade=CascadeType.ALL)
-
+	@JoinColumn(name = "fk_depId",referencedColumnName = "depId")
 	private  Department department;
 	
-	private long phonenumber;
-
-	private int availableNumberOfLeaves=10;
+   
+    @NotBlank(message="phone number shouldn't be blank or null")
+    @Size(min=10,max=10,message="invalid phone number")
+	private String phonenumber;
+    
+	private int availableNumberOfLeaves=7;
 	
 	private int leaves;	
 
@@ -57,11 +67,11 @@ public class Student {
 		this.department = department;
 	}
 
-	public long getPhonenumber() {
+	public String getPhonenumber() {
 		return phonenumber;
 	}
 
-	public void setPhonenumber(long phonenumber) {
+	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
 
@@ -102,7 +112,7 @@ public class Student {
 		this.studentId = studentId;
 	}
 
-	public Student(String name, String gender, Integer studentId, Address address, Department department, long phonenumber,
+	public Student(String name, String gender, Integer studentId, Address address, Department department, String phonenumber,
 			int availableNumberOfLeaves, int leaves) {
 		super();
 		this.name = name;
@@ -114,6 +124,9 @@ public class Student {
 		this.availableNumberOfLeaves = availableNumberOfLeaves;
 		this.leaves = leaves;
 	}
+
+
+	
 
 	
 	

@@ -2,6 +2,12 @@ package com.springboot.university.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 public class Department {
@@ -10,13 +16,13 @@ public class Department {
 	private Long depId;
 	
 	private String deptname;
-	
+
 	public Department() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Department(long depId, String deptname) {
+	public Department(Long depId, String deptname) {
 		super();
 		this.depId = depId;
 		this.deptname = deptname;
